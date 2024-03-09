@@ -25,7 +25,7 @@ body {
 }
 /* Layout */
 /* Container */
-.grid-container {
+.calculator {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 0.5fr repeat(6, 1fr);
@@ -134,6 +134,7 @@ body {
 button {
     font-size: 1.5rem;
     border: none;
+    cursor: pointer;
 }
 .clear {
     background: var(--clr-alert);
@@ -168,6 +169,7 @@ button {
 .seven,
 .eight,
 .nine,
+.zero,
 .decimal,
 .square {
     background: var(--clr-white);
@@ -182,6 +184,7 @@ button {
 .seven:hover,
 .eight:hover,
 .nine:hover,
+.zero:hover,
 .decimal:hover,
 .square:hover {
     background: var(--clr-gray);
