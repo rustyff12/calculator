@@ -29,6 +29,8 @@ keys.addEventListener("click", (e) => {
         if (clearScreen === "clear") {
             display.textContent = 0;
             operatorPressed = false;
+            decimalButton.classList.remove("disabled");
+            decimalButton.disabled = false;
         } else {
             if (previousKeyType === "operator" || displayValue === "0") {
                 display.textContent = keyValue;
@@ -42,6 +44,10 @@ keys.addEventListener("click", (e) => {
     if (type === "square") {
         const numSquare = display.textContent;
         display.textContent = numSquared(numSquare);
+
+        // Resets
+        decimalButton.classList.remove("disabled");
+        decimalButton.disabled = false;
     }
     // Operator
     if (type === "operator") {
@@ -73,6 +79,9 @@ keys.addEventListener("click", (e) => {
             // Update screen after sum changed
             calculator.dataset.operator = key.dataset.key;
         }
+        // Resets
+        decimalButton.classList.remove("disabled");
+        decimalButton.disabled = false;
     }
 
     // Equal
@@ -81,16 +90,18 @@ keys.addEventListener("click", (e) => {
         const firstNumber = sum;
         const operator = calculator.dataset.operator;
         const secondNumber = parseFloat(displayValue);
-        console.log(firstNumber);
+
         display.textContent = operate(firstNumber, operator, secondNumber);
+
+        // Resets
         operatorPressed = false;
         sum = 0;
+        decimalButton.classList.remove("disabled");
+        decimalButton.disabled = false;
     }
 
     calculator.dataset.previousKeyType = type;
     // console.log(calculator.dataset.previousOperationKey);
-    console.log(operatorPressed);
-    console.log("type: ", typeof sum, "sum is:", sum);
 });
 
 // Square
