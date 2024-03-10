@@ -1,59 +1,99 @@
-/* Main script */
 const calculator = document.querySelector(".calculator");
 const keys = calculator.querySelector(".key-grid");
-const screen = calculator.querySelector(".screen");
+const display = calculator.querySelector(".screen");
 
-const operatorArr = [];
-let operatorPressed = false;
 keys.addEventListener("click", (e) => {
-    // target pressed keys
-    const pressed = e.target;
-    const pressedKey = pressed.getAttribute("class");
+    const key = e.target;
+    const keyValue = key.textContent;
+    const displayValue = display.textContent;
 
-    const { type } = pressed.dataset;
-    const { key } = pressed.dataset;
-
-    if (type === "number" && operatorPressed === false) {
-        if (screen.textContent === "0") {
-            screen.textContent = pressed.textContent;
-        } else if (pressedKey === "clear") {
-            screen.textContent = 0;
+    const { type } = key.dataset;
+    const { previousKeyType } = calculator.dataset;
+    let clearScreen = key.getAttribute("class");
+    // Number
+    if (type === "number") {
+        if (clearScreen === "clear") {
+            display.textContent = 0;
         } else {
-            screen.textContent += pressed.textContent;
+            if (displayValue === "0") {
+                display.textContent = keyValue;
+            } else if (previousKeyType === "operator") {
+                display.textContent = keyValue;
+            } else {
+                display.textContent = displayValue + keyValue;
+            }
         }
-    } else if (type === "operator") {
-        operatorPressed = true;
-        const previous = screen.textContent;
-        operatorArr.push(previous);
-        console.log(operatorArr);
-        operatorArr.push(key);
-    } else if (type === "number" && operatorPressed === true) {
-        screen.textContent = pressed.textContent;
-        operatorPressed = false;
-    } /* else if (type === "equal") {
-        let sum = 0;
+    }
+    // Squared
+    if (type === "square") {
+        const numSquare = display.textContent;
+        display.textContent = numSquared(numSquare);
+    }
+    // Operator
+    if (type === "operator") {
+        calculator.dataset.firstNumber = displayValue;
+        calculator.dataset.operator = key.dataset.key;
+    }
 
-    } */
+    // Equal
+    if (type === "equal") {
+        // Perform a calculation
+        const firstNumber = calculator.dataset.firstNumber;
+        const operator = calculator.dataset.operator;
+        const secondNumber = parseInt(displayValue);
+
+        display.textContent = operate(firstNumber, operator, secondNumber);
+    }
+
+    calculator.dataset.previousKeyType = type;
+    console.log(calculator.dataset.previousKeyType);
 });
 
-/* for (let i = 0; i < nums.length; i++) {
-    const element = nums[i];
-    const elementNum = Object.keys(element);
-    const value = Object.values(element);
-    if (elementNum[0] === pressedKey) {
-        screen.textContent = value;
-        operatorArr.push(value);
+function operate(firstNumber, operator, secondNumber) {
+    firstNumber = parseFloat(firstNumber);
+    secondNumber = parseFloat(secondNumber);
+    let result = "";
+    if (operator === "plus") {
+        const addition = firstNumber + secondNumber;
+        if (Number.isInteger(addition)) {
+            return addition;
+        } else {
+            return Number.parseFloat(addition).toFixed(5);
+        }
     }
-} */
-/* const nums = [
-    { one: 1 },
-    { two: 2 },
-    { three: 3 },
-    { four: 4 },
-    { five: 5 },
-    { six: 6 },
-    { seven: 7 },
-    { eight: 8 },
-    { nine: 9 },
-    { zero: 0 },
-]; */
+    if (operator === "minus") {
+        const subtraction = firstNumber - secondNumber;
+        if (Number.isInteger(subtraction)) {
+            return subtraction;
+        } else {
+            return Number.parseFloat(subtraction).toFixed(5);
+        }
+    }
+
+    if (operator === "times") {
+        const multiplication = firstNumber * secondNumber;
+        if (Number.isInteger(multiplication)) {
+            return multiplication;
+        } else {
+            return Number.parseFloat(multiplication).toFixed(5);
+        }
+    }
+
+    if (operator === "divide") {
+        if (secondNumber === 0) {
+            return "Cannot divide by zero";
+        }
+        const division = firstNumber / secondNumber;
+        if (Number.isInteger(division)) {
+            return division;
+        } else {
+            return Number.parseFloat(division).toFixed(5);
+        }
+    }
+    return result;
+}
+
+function numSquared(num) {
+    const result = parseInt(num);
+    return result * result;
+}

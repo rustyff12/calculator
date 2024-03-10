@@ -114,19 +114,19 @@ body {
     grid-area: 4 / 3 / 5 / 4;
 }
 
-.plus {
+[data-key="plus"] {
     grid-area: 4 / 4 / 5 / 5;
 }
 
-.minus {
+[data-key="minus"] {
     grid-area: 3 / 4 / 4 / 5;
 }
 
-.times {
+[data-key="times"] {
     grid-area: 2 / 4 / 3 / 5;
 }
 
-.divide {
+[data-key="divide"] {
     grid-area: 1 / 4 / 2 / 5;
 }
 
