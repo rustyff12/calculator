@@ -1,6 +1,9 @@
 const calculator = document.querySelector(".calculator");
 const keys = calculator.querySelector(".key-grid");
 const display = calculator.querySelector(".screen");
+const decimalButton = calculator.querySelector(".decimal");
+let operatorPressed = false;
+let sum = 0;
 
 keys.addEventListener("click", (e) => {
     const key = e.target;
@@ -8,22 +11,33 @@ keys.addEventListener("click", (e) => {
     const displayValue = display.textContent;
 
     const { type } = key.dataset;
+
     const { previousKeyType } = calculator.dataset;
+
     let clearScreen = key.getAttribute("class");
+
+    if (type === "number" && key.textContent === ".") {
+        if (!displayValue.includes(".")) {
+            display.textContent = displayValue + ".";
+            key.classList.add("disabled");
+            key.disabled = true;
+        }
+    }
+
     // Number
     if (type === "number") {
         if (clearScreen === "clear") {
             display.textContent = 0;
+            operatorPressed = false;
         } else {
-            if (displayValue === "0") {
-                display.textContent = keyValue;
-            } else if (previousKeyType === "operator") {
+            if (previousKeyType === "operator" || displayValue === "0") {
                 display.textContent = keyValue;
             } else {
                 display.textContent = displayValue + keyValue;
             }
         }
     }
+
     // Squared
     if (type === "square") {
         const numSquare = display.textContent;
@@ -31,22 +45,52 @@ keys.addEventListener("click", (e) => {
     }
     // Operator
     if (type === "operator") {
-        calculator.dataset.firstNumber = displayValue;
-        calculator.dataset.operator = key.dataset.key;
+        if (operatorPressed === false) {
+            calculator.dataset.firstNumber = displayValue;
+            calculator.dataset.operator = key.dataset.key;
+            sum = parseFloat(displayValue);
+            operatorPressed = true;
+        } else if (operatorPressed === true) {
+            const operator = calculator.dataset.operator;
+
+            // Operation based on operator
+            if (operator === "plus") {
+                sum = sum + parseFloat(displayValue);
+            } else if (operator === "minus") {
+                sum = sum - parseFloat(displayValue);
+            } else if (operator === "multiply") {
+                sum = sum * parseFloat(displayValue);
+            } else if (operator === "divide") {
+                // Check if dividing by zero
+                if (parseFloat(displayValue) === 0) {
+                    display.textContent = "Cannot divide by zero";
+                    return; // Exit the function to stop execution
+                }
+                sum = sum / parseFloat(displayValue);
+            }
+            display.textContent = sum;
+
+            // Update screen after sum changed
+            calculator.dataset.operator = key.dataset.key;
+        }
     }
 
     // Equal
     if (type === "equal") {
         // Perform a calculation
-        const firstNumber = calculator.dataset.firstNumber;
+        const firstNumber = sum;
         const operator = calculator.dataset.operator;
         const secondNumber = parseFloat(displayValue);
-
+        console.log(firstNumber);
         display.textContent = operate(firstNumber, operator, secondNumber);
+        operatorPressed = false;
+        sum = 0;
     }
 
     calculator.dataset.previousKeyType = type;
-    // console.log(calculator.dataset.previousKeyType);
+    // console.log(calculator.dataset.previousOperationKey);
+    console.log(operatorPressed);
+    console.log("type: ", typeof sum, "sum is:", sum);
 });
 
 // Square
