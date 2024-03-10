@@ -40,25 +40,33 @@ keys.addEventListener("click", (e) => {
         // Perform a calculation
         const firstNumber = calculator.dataset.firstNumber;
         const operator = calculator.dataset.operator;
-        const secondNumber = parseInt(displayValue);
+        const secondNumber = parseFloat(displayValue);
 
         display.textContent = operate(firstNumber, operator, secondNumber);
     }
 
     calculator.dataset.previousKeyType = type;
-    console.log(calculator.dataset.previousKeyType);
+    // console.log(calculator.dataset.previousKeyType);
 });
 
+// Operate
 function operate(firstNumber, operator, secondNumber) {
     firstNumber = parseFloat(firstNumber);
     secondNumber = parseFloat(secondNumber);
     let result = "";
     if (operator === "plus") {
+        console.log(firstNumber);
+        console.log(secondNumber);
         const addition = firstNumber + secondNumber;
+        console.log(addition);
+        const fixedLimit = floatLimit(addition);
+        console.log(fixedLimit);
         if (Number.isInteger(addition)) {
             return addition;
-        } else {
+        } else if (fixedLimit >= 5) {
             return Number.parseFloat(addition).toFixed(5);
+        } else {
+            return Number.parseFloat(addition).toFixed(fixedLimit);
         }
     }
     if (operator === "minus") {
@@ -94,6 +102,32 @@ function operate(firstNumber, operator, secondNumber) {
 }
 
 function numSquared(num) {
-    const result = parseInt(num);
-    return result * result;
+    const toSquare = parseFloat(num);
+    const result = toSquare * toSquare;
+
+    // Determine num of decimal places neede without trailing zeros
+    let precision = 5;
+    const resultString = result.toFixed(precision);
+    // Trim trailing zeros
+    const trimmedResultString = resultString.replace(/0*$/, "");
+    const decimalPos = trimmedResultString.indexOf(".");
+    precision = Math.min(
+        precision,
+        trimmedResultString.length - (decimalPos + 1)
+    );
+
+    // Round the result to the determined precision
+    const roundedResult = parseFloat(result.toFixed(precision));
+
+    return roundedResult;
 }
+
+/* function getPrecision(num) {
+    const str = num.toString();
+    const indexOfDecimal = str.indexOf(".");
+    if (indexOfDecimal >= 0) {
+        return str.length - indexOfDecimal - 1;
+    }
+    return 0;
+}
+ */
