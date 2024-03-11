@@ -203,3 +203,19 @@ button {
 .disabled:hover {
     cursor: default;
 }
+
+@media screen and (max-width: 1000px) {
+    .calculator {
+        width: 65vw;
+    }
+}
+@media screen and (max-width: 850px) {
+    .calculator {
+        width: 75vw;
+    }
+}
+@media screen and (max-width: 600px) {
+    .calculator {
+        width: 95vw;
+    }
+}
